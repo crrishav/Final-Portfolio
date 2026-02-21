@@ -5,7 +5,7 @@ const ProjectCard = ({ title, description }) => {
 
   return (
     <div
-      className="relative flex flex-col rounded-[2.5rem] p-6 w-[320px] md:w-[380px]"
+      className="relative flex flex-col rounded-[2.5rem] p-6 w-[350px] md:w-[400px] h-[420px]"
       style={{
         backgroundColor: "#D9D9D9",
         fontFamily: "'Inter', sans-serif",
@@ -22,7 +22,7 @@ const ProjectCard = ({ title, description }) => {
       <div
         className="w-full rounded-[1.8rem] mb-6 overflow-hidden"
         style={{
-          height: "220px",
+          height: "180px",
           backgroundColor: "#A0A0A0",
           backgroundImage: "url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800&auto=format&fit=crop')",
           backgroundSize: "cover",

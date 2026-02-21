@@ -177,3 +177,59 @@ export const FadeInSlideRight = ({ children, duration = 1, delay = 0, distance =
 
   return <div ref={elementRef} style={{ opacity: 0 }}>{children}</div>;
 };
+
+/**
+ * Contact Reveal Animation Component
+ */
+export const ContactReveal = ({ children, logo }) => {
+  const containerRef = useRef(null);
+  const logoRef = useRef(null);
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const logoEl = logoRef.current;
+    const contentEl = contentRef.current;
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+        start: "top center",
+        end: "bottom center",
+        scrub: 1,
+        // markers: true // Uncomment for debugging
+      }
+    });
+
+    // Initial state
+    gsap.set(contentEl, { opacity: 0, x: 50 });
+    gsap.set(logoEl, { x: 0 });
+
+    // Timeline sequence
+    tl.to(logoEl, {
+      x: -180,
+      duration: 1,
+      ease: "power2.inOut"
+    })
+    .to(contentEl, {
+      opacity: 1,
+      x: 0,
+      duration: 1,
+      ease: "power2.out"
+    }, "<"); // Start at the same time as logo movement
+
+  }, []);
+
+  return (
+    <div ref={containerRef} className="flex items-center justify-center min-h-screen w-full overflow-hidden">
+      <div className="relative flex items-center justify-center w-full max-w-6xl">
+        <div ref={logoRef} className="absolute z-10">
+          {logo}
+        </div>
+        <div ref={contentRef} className="opacity-0 pl-[300px]">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
