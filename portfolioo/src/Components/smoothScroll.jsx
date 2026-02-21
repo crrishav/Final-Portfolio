@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "lenis/dist/lenis.css";
 
 export default function SmoothScroll({ children, options }) {
@@ -13,6 +14,9 @@ export default function SmoothScroll({ children, options }) {
         });
         lenisRef.current = lenis;
 
+        // Sync ScrollTrigger with Lenis
+        lenis.on('scroll', ScrollTrigger.update);
+
         function raf(time) {
             lenis.raf(time);
             requestAnimationFrame(raf);
@@ -22,6 +26,7 @@ export default function SmoothScroll({ children, options }) {
 
         return () => {
             cancelAnimationFrame(rafId);
+            lenis.off('scroll', ScrollTrigger.update);
             lenis.destroy();
             lenisRef.current = null;
         };

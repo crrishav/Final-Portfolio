@@ -185,49 +185,86 @@ export const ContactReveal = ({ children, logo }) => {
   const containerRef = useRef(null);
   const logoRef = useRef(null);
   const contentRef = useRef(null);
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
+    const isMobile = window.innerWidth < 768;
     const container = containerRef.current;
     const logoEl = logoRef.current;
     const contentEl = contentRef.current;
+    const wrapper = wrapperRef.current;
+
+    if (!container || !logoEl || !contentEl) return;
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
-        start: "top center",
-        end: "bottom center",
-        scrub: 1,
+        start: "top 85%",
+        toggleActions: "play none none none",
         // markers: true // Uncomment for debugging
       }
     });
 
     // Initial state
-    gsap.set(contentEl, { opacity: 0, x: 50 });
-    gsap.set(logoEl, { x: 0 });
+    gsap.set(logoEl, { opacity: 0, scale: 0.8 });
+    gsap.set(contentEl, { opacity: 0, x: isMobile ? 0 : 100, y: isMobile ? 50 : 0 });
 
-    // Timeline sequence
-    tl.to(logoEl, {
-      x: -180,
-      duration: 1,
-      ease: "power2.inOut"
-    })
-    .to(contentEl, {
-      opacity: 1,
-      x: 0,
-      duration: 1,
-      ease: "power2.out"
-    }, "<"); // Start at the same time as logo movement
+    if (isMobile) {
+      // Simple fade in and slide up for mobile (slight delay so it doesn't feel too fast)
+      tl.to(contentEl, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        delay: 0.35,
+        ease: "power2.out"
+      });
+    } else {
+      // Phase 1: Initial Entry (Desktop)
+      tl.to(logoEl, {
+        opacity: 1,
+        scale: 1,
+        duration: 1,
+        ease: "power2.out"
+      })
+      .to({}, { duration: 0.8 })
+      // Phase 2: The Split
+      .to(logoEl, {
+        x: -200,
+        duration: 1,
+        ease: "power2.inOut"
+      }, "split")
+      .to(contentEl, {
+        opacity: 1,
+        x: 0,
+        duration: 1,
+        delay: 0.35,
+        ease: "power2.out"
+      }, "split")
+      .to({}, { duration: 0.5 });
+    }
 
+    // Let ScrollTrigger recalc after layout (helps with Lenis + pin/scrub on desktop)
+    const refreshId = requestAnimationFrame(() => {
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+    });
+
+    return () => {
+      cancelAnimationFrame(refreshId);
+      tl.kill();
+      if (tl.scrollTrigger) tl.scrollTrigger.kill();
+    };
   }, []);
 
   return (
-    <div ref={containerRef} className="flex items-center justify-center min-h-screen w-full overflow-hidden">
-      <div className="relative flex items-center justify-center w-full max-w-6xl">
-        <div ref={logoRef} className="absolute z-10">
-          {logo}
-        </div>
-        <div ref={contentRef} className="opacity-0 pl-[300px]">
-          {children}
+    <div ref={containerRef} className="relative w-full bg-white">
+      <div ref={wrapperRef} className="h-screen md:h-screen w-full flex items-center justify-center overflow-hidden bg-white">
+        <div className="relative flex flex-col md:flex-row items-center justify-center w-full max-w-6xl px-4 md:px-8">
+          <div ref={logoRef} className="z-10 flex items-center justify-center mb-8 md:mb-0 md:absolute">
+            {logo}
+          </div>
+          <div ref={contentRef} className="opacity-0 md:pl-[400px] text-center md:text-left">
+            {children}
+          </div>
         </div>
       </div>
     </div>
