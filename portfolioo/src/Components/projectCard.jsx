@@ -1,63 +1,59 @@
-import { useState } from "react";
+import { ExternalLink, GitBranch } from "lucide-react";
+import { ParallaxImage, Magnetic } from "./animations";
 
-const ProjectCard = ({ title, description, image, link }) => {
-  const [hovered, setHovered] = useState(false);
-
+const ProjectCard = ({ title, description, image, link, liveLink }) => {
   return (
-    <a
-      href={link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block no-underline"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+    <div
+      className="group relative flex flex-col bg-[#F5F5F5] rounded-[2.5rem] overflow-hidden project-card-shadow transition-all duration-500 w-full max-w-[450px] aspect-[4/5] md:aspect-[3/4]"
     >
-      <div
-        className="relative flex flex-col rounded-[2rem] md:rounded-[2.5rem] p-6 w-full max-w-[350px] md:w-[400px] h-auto md:h-[420px]"
-        style={{
-          backgroundColor: "#D9D9D9",
-          fontFamily: "'Inter', sans-serif",
-          cursor: "pointer",
-          transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-          boxShadow: hovered
-            ? "0 20px 40px rgba(0,0,0,0.12)"
-            : "0 4px 12px rgba(0,0,0,0.05)",
-          transform: hovered ? "translateY(-8px)" : "translateY(0)",
-        }}
-      >
-        {/* Image placeholder */}
-        <div
-          className="w-full rounded-[1.5rem] md:rounded-[1.8rem] mb-6 overflow-hidden"
-          style={{
-            height: "150px",
-            mdHeight: "180px", // Custom property for reference
-            height: window.innerWidth < 768 ? "150px" : "180px",
-            backgroundColor: "#A0A0A0",
-            backgroundImage: `url(${image})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            transition: "transform 0.5s ease",
-            transform: hovered ? "scale(1.05)" : "scale(1)",
-          }}
+      {/* Image Section */}
+      <div className="relative w-full h-[60%] overflow-hidden">
+        <ParallaxImage 
+          src={image} 
+          alt={title} 
+          className="w-full h-full grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700" 
         />
-
-        {/* Title */}
-        <h3
-          className="text-center text-lg md:text-xl mb-3 tracking-tight"
-          style={{ fontWeight: "800", color: "#000" }}
-        >
-          {title}
-        </h3>
-
-        {/* Description */}
-        <p
-          className="text-center text-sm md:text-base leading-relaxed"
-          style={{ color: "#333", fontWeight: "500" }}
-        >
-          {description}
-        </p>
+        <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500" />
       </div>
-    </a>
+
+      {/* Content Section */}
+      <div className="flex flex-col flex-1 p-8 md:p-10 justify-between">
+        <div>
+          <h3 className="text-2xl md:text-3xl font-black tracking-tighter text-black mb-4 leading-tight">
+            {title}
+          </h3>
+          <p className="text-sm md:text-base text-gray-600 font-medium leading-relaxed line-clamp-3 md:line-clamp-4">
+            {description}
+          </p>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex items-center gap-4 mt-6">
+          {liveLink && (
+            <Magnetic strength={0.2}>
+              <a
+                href={liveLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-full text-sm font-bold hover:scale-105 transition-transform"
+              >
+                Live <ExternalLink size={14} />
+              </a>
+            </Magnetic>
+          )}
+          <Magnetic strength={0.2}>
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-6 py-3 border border-black/10 rounded-full text-sm font-bold hover:bg-black/5 transition-colors"
+            >
+              Repo <GitBranch size={14} />
+            </a>
+          </Magnetic>
+        </div>
+      </div>
+    </div>
   );
 };
 

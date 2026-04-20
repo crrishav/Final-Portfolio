@@ -10,6 +10,7 @@ export default function SmoothScroll({ children, options }) {
         const lenis = new Lenis({
             duration: 1.2,
             smoothWheel: true,
+            anchors: true,
             ...options,
         });
         lenisRef.current = lenis;

@@ -1,14 +1,21 @@
+import { Magnetic } from './animations';
+
 export default function IconsGrid() {
-  const icons = ['react', 'flutter', 'tailwind', 'html', 'dart', 'css', 'js', 'figma'];
+  const icons = ['react', 'nextjs', 'tailwind', 'html', 'nodejs', 'css', 'js', 'figma'];
+  
   return (
-    <div className="grid grid-cols-4 gap-4 md:gap-12 justify-items-center px-4 w-full max-w-lg mx-auto">
+    <div className="grid grid-cols-4 gap-6 md:gap-16 justify-items-center px-4 w-full max-w-2xl mx-auto">
       {icons.map((icon) => (
-        <div key={icon} className="p-1">
-          <img 
-            src={`https://skillicons.dev/icons?i=${icon}`} 
-            alt={icon} 
-            className="w-14 h-14 md:w-20 md:h-20 transition-transform hover:scale-110" 
-          />
+        <div key={icon}>
+          <Magnetic strength={0.3}>
+            <div className="p-3 bg-white rounded-2xl shadow-sm border border-black/5 transition-colors hover:border-black/20">
+              <img 
+                src={`https://skillicons.dev/icons?i=${icon}`} 
+                alt={icon} 
+                className="w-10 h-10 md:w-16 md:h-16" 
+              />
+            </div>
+          </Magnetic>
         </div>
       ))}
     </div>

@@ -1,105 +1,369 @@
-import './App.css'
-import { FadeIn, FadeInSlideUp, FadeInSlideDown, FadeInSlideLeft, FadeInSlideRight, ContactReveal } from './Components/animations'
-import NavBar from './Components/navBar'
-import IconsGrid from './Components/iconsGrid'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowUpRight, Mail, SquareCode } from 'lucide-react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import SmoothScroll from './Components/smoothScroll'
-import ProjectCard from './Components/projectCard'
-import LogoCircleR from './Components/rWithCircle'
+import './App.css'
 
 import gigImg from './assets/gig.PNG'
 import botImg from './assets/Bot.PNG'
+import faisanImg from './assets/faisan kaka.PNG'
+import peakImg from './assets/peak digital.PNG'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const workItems = [
+  {
+    title: 'Faisan Kaka',
+    tag: 'Fashion Commerce',
+    year: '2025',
+    description:
+      'Luxury storefront with CMS-driven storytelling, premium transitions, and a conversion-focused shopping journey.',
+    image: faisanImg,
+    github: 'https://github.com/crrishav/Faisan-Kaka',
+    live: 'https://faisan-kaka.vercel.app/',
+  },
+  {
+    title: 'Peak Digital',
+    tag: 'Creative Agency',
+    year: '2025',
+    description:
+      'Boutique agency website crafted around typographic rhythm, motion pacing, and intentional whitespace.',
+    image: peakImg,
+    github: 'https://github.com/crrishav/Peak-Digital',
+    live: 'https://peak-digital-agency.vercel.app/',
+  },
+  {
+    title: 'GIG Platform',
+    tag: 'Marketplace Product',
+    year: '2024',
+    description:
+      'Freelance marketplace with profile systems, job listings, and pragmatic backend architecture for scale.',
+    image: gigImg,
+    github: 'https://github.com/omthapa779/gig',
+    live: '',
+  },
+  {
+    title: 'Reddit Job Bot',
+    tag: 'Automation',
+    year: '2024',
+    description:
+      'Python-based monitoring engine that captures high-intent job opportunities from real-time subreddit feeds.',
+    image: botImg,
+    github: 'https://github.com/crrishav/job-bot',
+    live: '',
+  },
+]
+
+const capabilities = [
+  'Strategy-first UI direction',
+  'Motion architecture and pacing',
+  'Performance-focused React builds',
+  'Polished launch-ready handoff',
+]
 
 function App() {
+  const pageRef = useRef(null)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const handleNavClick = (event, selector) => {
+    event.preventDefault()
+    const target = document.querySelector(selector)
+    if (!target) return
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    setIsMenuOpen(false)
+  }
+
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth > 760) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  useEffect(() => {
+    const media = gsap.matchMedia()
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray('[data-reveal]').forEach((el, index) => {
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 56 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            delay: index * 0.03,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 86%',
+              once: true,
+            },
+          },
+        )
+      })
+
+      gsap.utils.toArray('[data-parallax]').forEach((el) => {
+        gsap.to(el, {
+          yPercent: -12,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        })
+      })
+
+      gsap.utils.toArray('[data-stagger]').forEach((group) => {
+        const items = group.children
+        gsap.fromTo(
+          items,
+          { opacity: 0, y: 28 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.12,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: group,
+              start: 'top 82%',
+              once: true,
+            },
+          },
+        )
+      })
+
+      gsap.utils.toArray('.project-card').forEach((card, index) => {
+        gsap.fromTo(
+          card,
+          {
+            y: index % 2 === 0 ? 42 : 68,
+            rotateZ: index % 2 === 0 ? 0.8 : -0.8,
+          },
+          {
+            y: 0,
+            rotateZ: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 92%',
+              end: 'top 35%',
+              scrub: true,
+            },
+          },
+        )
+      })
+
+      gsap.to('.capability-line', {
+        scaleY: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.capability-track',
+          start: 'top 70%',
+          end: 'bottom 45%',
+          scrub: true,
+        },
+      })
+
+      gsap.to('.progress-meter', {
+        scaleY: 1,
+        transformOrigin: 'top',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.site',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: true,
+        },
+      })
+
+      media.add('(min-width: 960px)', () => {
+        gsap.fromTo(
+          '.hero-title-line',
+          { yPercent: 0 },
+          {
+            yPercent: -22,
+            ease: 'none',
+            stagger: 0.08,
+            scrollTrigger: {
+              trigger: '.hero',
+              start: 'top top',
+              end: 'bottom top',
+              scrub: true,
+            },
+          },
+        )
+
+        gsap.to('.hero-subcopy', {
+          yPercent: -18,
+          opacity: 0.45,
+          scrollTrigger: {
+            trigger: '.hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        })
+      })
+    }, pageRef)
+
+    return () => {
+      media.revert()
+      ctx.revert()
+    }
+  }, [])
+
   return (
-    <div className="min-h-screen bg-white text-black font-['Inter']">
-      <div className="sticky top-0 z-50">
-        <NavBar />
-      </div>
-      
-      <SmoothScroll>
+    <SmoothScroll>
+      <div className="site" ref={pageRef}>
+        <div className="progress-rail" aria-hidden="true">
+          <div className="progress-meter" />
+        </div>
+
+        <header className={`top-bar ${isMenuOpen ? 'top-bar--open' : ''}`}>
+          <p className="top-bar__name">Rishav Chaudhary</p>
+          <button
+            className="top-bar__toggle"
+            type="button"
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+          >
+            {isMenuOpen ? 'Close' : 'Menu'}
+          </button>
+          <nav className={`top-bar__nav ${isMenuOpen ? 'is-open' : ''}`} id="mobile-navigation">
+            <a href="#work" onClick={(event) => handleNavClick(event, '#work')}>
+              Work
+            </a>
+            <a href="#process" onClick={(event) => handleNavClick(event, '#process')}>
+              Process
+            </a>
+            <a href="#contact" onClick={(event) => handleNavClick(event, '#contact')}>
+              Contact
+            </a>
+          </nav>
+        </header>
+
         <main>
-          {/* Hero Section */}
-          <section className="flex flex-col items-center justify-center min-h-screen text-center px-1">
-            <FadeInSlideUp duration={1.2} distance={30}>
-              <h1 className="m-0 text-5xl md:text-8xl font-normal tracking-tight flex flex-wrap justify-center items-baseline gap-2 md:gap-4 px-4">
-                <span className="text-[40px] md:text-[60px]">Hi, I am</span>
-                <span className="font-kaushan text-[40px] md:text-[60px]">Rishav</span>
-              </h1>
-            </FadeInSlideUp>
-            
-            <FadeIn delay={0.8} duration={1}>
-              <p className="text-xl md:text-2xl mt-0 text-gray-700 font-medium font-['Inter']">
-                Frontend Developer
-              </p>
-            </FadeIn>
+          <section className="hero">
+            <p className="eyebrow" data-reveal>
+              Frontend Engineer and Motion Designer
+            </p>
+
+            <h1 className="hero-title" aria-label="Rishav Chaudhary">
+              <span className="hero-title-line">Minimal.</span>
+              <span className="hero-title-line">Sharp.</span>
+              <span className="hero-title-line">Memorable.</span>
+            </h1>
+
+            <p className="hero-subcopy" data-reveal>
+              I build white-space-heavy digital experiences with agency-grade motion,
+              strategic storytelling, and production-level frontend execution.
+            </p>
+
+            <a className="hero-cta" href="#work" data-reveal>
+              Explore selected work
+              <ArrowUpRight size={18} aria-hidden="true" />
+            </a>
           </section>
 
-          {/* Technologies Section */}
-          <section className="flex flex-col items-center justify-center min-h-[80vh] py-40 bg-white">
-            <FadeInSlideUp duration={1} distance={40} trigger={true}>
-              <h2 className="text-[32px] md:text-[60px] font-normal tracking-tight text-black m-0 mb-8 font-['Inter'] px-4 text-center">
-                Technologies I use
-              </h2>
-            </FadeInSlideUp>
-            
-            <FadeIn delay={0.6} duration={1} trigger={true}>
-              <IconsGrid />
-            </FadeIn>
+          <section className="statement" data-reveal>
+            <p>
+              Most sites feel assembled. Mine feel directed. Every section has intent,
+              every transition has timing, and every layout choice earns its place.
+            </p>
           </section>
 
-          {/* Projects Section */}
-          <section id="projects" className="flex flex-col items-center justify-center py-20 md:py-40 bg-[#fff] px-4">
-            <FadeInSlideDown duration={1.2} distance={40} trigger={true}>
-              <h2 className="text-[40px] md:text-[60px] font-normal tracking-tight mb-12 mt-10 text-black m-0 font-['Inter'] text-center">
-                My Projects
-              </h2>
-            </FadeInSlideDown>
+          <section className="work" id="work">
+            <div className="section-head" data-reveal>
+              <p className="eyebrow">Selected Work</p>
+              <h2>Projects with commercial intent and visual precision.</h2>
+            </div>
 
-            <div className="flex flex-wrap justify-center gap-12 md:gap-40 px-4 md:px-8 max-w-7xl">
-              <FadeInSlideRight duration={1.2} distance={100} trigger={true}>
-                <ProjectCard 
-                  title="GIG - Freelancing Platform"
-                  description="A lightweight Node.js + Express + MongoDB marketplace for companies and freelancers. Companies can register, manage profiles, and post short-term or remote freelance jobs (including on-site gigs)."
-                  image={gigImg}
-                  link="https://github.com/omthapa779/gig"
-                />
-              </FadeInSlideRight>
+            <div className="work-grid" data-stagger>
+              {workItems.map((project, index) => (
+                <article
+                  key={project.title}
+                  className="project-card"
+                  data-reveal
+                  style={{ '--card-delay': `${index * 0.06}s` }}
+                >
+                  <div className="project-visual">
+                    <img src={project.image} alt={`${project.title} preview`} data-parallax />
+                  </div>
 
-              <FadeInSlideLeft duration={1.2} distance={100} trigger={true} delay={0.2}>
-                <ProjectCard 
-                  title="Job Bot"
-                  description="An automated lead-generation tool built with Python and SQLite. It leverages the feedparser library to monitor Reddit RSS feeds in real-time, using a custom weighted-scoring algorithm to identify and alert high-value freelance opportunities via Discord Webhooks"
-                  image={botImg}
-                  link="https://github.com/crrishav/job-bot"
-                />
-              </FadeInSlideLeft>
+                  <div className="project-meta">
+                    <div className="project-kicker">
+                      <span>{project.tag}</span>
+                      <span>{project.year}</span>
+                    </div>
+                    <h3>{project.title}</h3>
+                    <p>{project.description}</p>
+                    <div className="project-links">
+                      <a href={project.github} target="_blank" rel="noreferrer">
+                        Source
+                        <ArrowUpRight size={16} aria-hidden="true" />
+                      </a>
+                      {project.live ? (
+                        <a href={project.live} target="_blank" rel="noreferrer">
+                          Live
+                          <ArrowUpRight size={16} aria-hidden="true" />
+                        </a>
+                      ) : null}
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
-          
-          {/* Final Contact Section */}
-          <section id="contact" className="bg-white">
-            <ContactReveal 
-              logo={<LogoCircleR />}
-            >
-              <div className="flex flex-col gap-2 px-4">
-                <h2 className="text-[32px] md:text-[55px] font-normal leading-tight m-0 text-black font-['ADLaM_Display']">
-                  Contact Me
-                </h2>
-                <div className="flex flex-col gap-2">
-                  <p className="text-base md:text-2xl font-medium text-black m-0 break-words">
-                    crrishav.business@gmail.com
-                  </p>
-                  <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-8 text-sm md:text-xl font-medium text-black">
-                    <a href="https://www.instagram.com/crrishavv/" target="_blank" rel="noopener noreferrer" className="text-black underline md:no-underline hover:underline cursor-pointer">Instagram</a>
-                    <a href="https://github.com/crrishav" target="_blank" rel="noopener noreferrer" className="text-black underline md:no-underline hover:underline cursor-pointer">Github</a>
-                  </div>
+
+          <section className="process" id="process">
+            <div className="section-head" data-reveal>
+              <p className="eyebrow">How I Work</p>
+              <h2>Clear thinking, elegant systems, and fast iterations.</h2>
+            </div>
+
+            <div className="capability-track" data-stagger>
+              <div className="capability-line" aria-hidden="true" />
+              {capabilities.map((item) => (
+                <div className="capability" key={item} data-reveal>
+                  {item}
                 </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="contact" id="contact">
+            <div className="contact-panel" data-reveal>
+              <p className="eyebrow">Have a project in mind?</p>
+              <h2>Let's build something undeniable.</h2>
+              <a className="contact-email" href="mailto:crrishav.business@gmail.com">
+                <Mail size={22} aria-hidden="true" />
+                crrishav.business@gmail.com
+              </a>
+
+              <div className="socials">
+                <a href="https://github.com/crrishav" target="_blank" rel="noreferrer">
+                  <SquareCode size={17} aria-hidden="true" />
+                  Github
+                </a>
+                <a href="https://www.instagram.com/crrishavv/" target="_blank" rel="noreferrer">
+                  <ArrowUpRight size={17} aria-hidden="true" />
+                  Instagram
+                </a>
               </div>
-            </ContactReveal>
+            </div>
           </section>
         </main>
-      </SmoothScroll>
-    </div>
+      </div>
+    </SmoothScroll>
   )
 }
 
